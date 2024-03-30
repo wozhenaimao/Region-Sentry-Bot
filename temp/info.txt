@@ -1,0 +1,1 @@
+temp .png images will be created and stored here before being deleted
