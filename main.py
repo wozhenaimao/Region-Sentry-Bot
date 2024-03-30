@@ -1,6 +1,7 @@
 import os
 import difflib
 import re
+from datetime import datetime
 
 import discord
 from discord import app_commands
@@ -40,23 +41,25 @@ async def first_command(interaction: discord.Interaction, name: str):
     mapData = FoxholeAPI.map(realName).json()
 
     e = discord.Embed(
-        title = f'Region “{re.sub(r"(\w)([A-Z])", r"\1 \2", realName.replace('Hex', ''))}” info',
-        description = f'Regional data on the {mapData['dayOfWar']}th day of war',
-        color = discord.Colour.from_rgb(21, 38, 18)
+        title = f'**Region “{re.sub(r"(\w)([A-Z])", r"\1 \2", realName.replace('Hex', ''))}” info**',
+        description = f'Regional data on the __{mapData['dayOfWar']}th__ day of war',
+        color = discord.Colour.from_rgb(61, 78, 58)
     )
     e.add_field(
-        name='Total Enlistments',
-        value=f'About {mapData['totalEnlistments']} people have enlisted here',
+        name='• Total **Enlistments**',
+        value=f'About __{mapData['totalEnlistments']} people__ have enlisted here',
         inline=False
     )
     e.add_field(
-        name='Total Casualties',
-        value=f'Colonials: {mapData['colonialCasualties']}\nWardens: {mapData['wardenCasualties']}',
+        name='• Total **Casualties**',
+        value=f'Colonials: __{mapData['colonialCasualties']}__\nWardens: __{mapData['wardenCasualties']}__',
         inline=False
     )
     f = discord.File(f'temp/{regionImagePath}.png', filename="image.png")
     e.set_image(url='attachment://image.png')
-    e.set_footer(text='This is an open source project')
+
+    warData = FoxholeAPI.war().json()
+    e.set_footer(text=f'War №{warData['warNumber']}')
 
     await interaction.followup.send(file=f, embed=e)
 
