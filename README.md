@@ -21,7 +21,7 @@ pip install -r requirements.txt
 
 Create a new .env file containing your discord bot's token
 ```bash
-DISCORD_BOT_TOKEN="you token goes here"
+DISCORD_BOT_TOKEN="your token goes here"
 ```
 
 ## Usage
