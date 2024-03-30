@@ -2,8 +2,9 @@
 
 This bot is based on the FOXHOLE warapi.
 
-https://github.com/clapfoot/warapi
-https://github.com/clapfoot/warapi?tab=License-1-ov-file
+Original repository - https://github.com/clapfoot/warapi
+
+Original license - https://github.com/clapfoot/warapi?tab=License-1-ov-file
 
 ## Table of Contents
 
@@ -32,6 +33,4 @@ Add the bot to your discord server. Now you can use the region command
 
 ## License
 
-As long as you follow the instructions provided in the original license
-of warapi (https://github.com/clapfoot/warapi?tab=License-1-ov-file), you can
-do whatever you want with this code.
+You must follow all of the original license instructions from warapi https://github.com/clapfoot/warapi?tab=License-1-ov-file
