@@ -65,7 +65,7 @@ async def first_command(interaction: discord.Interaction, name: str):
     e.set_image(url='attachment://image.png')
 
     warData = FoxholeAPI.war().json()
-    e.set_footer(text=f'War №{warData['warNumber']}')
+    e.set_footer(text=f'War №{warData["warNumber"]}')
 
     await interaction.followup.send(file=f, embed=e)
 
