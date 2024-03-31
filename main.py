@@ -53,12 +53,12 @@ async def first_command(interaction: discord.Interaction, name: str):
     )
     e.add_field(
         name='• Total **Enlistments**',
-        value=f'About __{mapData['totalEnlistments']} people__ have enlisted here',
+        value=f'About __{mapData["totalEnlistments"]} people__ have enlisted here',
         inline=False
     )
     e.add_field(
         name='• Total **Casualties**',
-        value=f'Colonials: __{mapData['colonialCasualties']}__\nWardens: __{mapData['wardenCasualties']}__',
+        value=f'Colonials: __{mapData["colonialCasualties"]}__\nWardens: __{mapData["wardenCasualties"]}__',
         inline=False
     )
     f = discord.File(f'temp/{regionImagePath}.png', filename="image.png")
@@ -85,7 +85,7 @@ async def first_command(interaction: discord.Interaction):
     
     e = discord.Embed(
         title = f'**Real data of the entire battlefield**',
-        description = f'Conquest started at __{warData['conquestStartTime']}__ (UNIX timestamp)',
+        description = f'Conquest started at __{warData["conquestStartTime"]}__ (UNIX timestamp)',
         color = discord.Colour.from_rgb(255, 255, 255)
     )
     e.add_field(
@@ -95,7 +95,7 @@ async def first_command(interaction: discord.Interaction):
     )
     f = discord.File(f'temp/{mapImagePath}.jpg', filename="image.jpg")
     e.set_image(url='attachment://image.jpg')
-    e.set_footer(text=f'War №{warData['warNumber']} See the image above for complete details of the entire map')
+    e.set_footer(text=f'War №{warData["warNumber"]} See the image above for complete details of the entire map')
 
     await interaction.followup.send(file=f, embed=e)
 
