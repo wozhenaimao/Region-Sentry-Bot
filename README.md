@@ -37,6 +37,12 @@ Add the bot to your discord server. Now you can use the region commands
 Notice that the /map command takes a long time to process because it covers
 absolutely all of the publicly available points of the map
 
+An exmaple of /map image output
+![alt text](static/map_preview.png)
+
+An exmaple of /region image output
+![alt text](static/region_preview.png)
+
 ## License
 
 You must follow all of the original license instructions from warapi https://github.com/clapfoot/warapi?tab=License-1-ov-file
