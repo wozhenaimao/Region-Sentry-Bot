@@ -48,7 +48,7 @@ async def first_command(interaction: discord.Interaction, name: str):
 
     e = discord.Embed(
         title = f'**Region “{re.sub(fr"({chr(92)}w)([A-Z])", fr"{chr(92)}1 {chr(92)}2", realName.replace("Hex", ""))}” info**',
-        description = f'Regional data on the __{mapData['dayOfWar']}th__ day of war.\nRegion status: {regionType}',
+        description = f'Regional data on the __{mapData["dayOfWar"]}th__ day of war.\nRegion status: {regionType}',
         color = color
     )
     e.add_field(
