@@ -26,10 +26,16 @@ DISCORD_BOT_TOKEN="your token goes here"
 
 ## Usage
 
-Add the bot to your discord server. Now you can use the region command
+Add the bot to your discord server. Now you can use the region commands
 ```bash
 /region :name:
 ```
+```bash
+/map
+```
+
+Notice that the /map command takes a long time to process because it covers
+absolutely all of the publicly available points of the map
 
 ## License
 
