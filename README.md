@@ -33,15 +33,19 @@ Add the bot to your discord server. Now you can use the region commands
 ```bash
 /map
 ```
+```bash
+/zones
+```
 
-Notice that the /map command takes a long time to process because it covers
-absolutely all of the publicly available points of the map
+An example of /map image output
+![alt text](static/map_preview.jpeg)
 
-An exmaple of /map image output
-![alt text](static/map_preview.png)
-
-An exmaple of /region image output
+Examples of /region image output
 ![alt text](static/region_preview.png)
+![alt text](static/map_preview1.png)
+
+An examples of /zones image output
+![alt text](static/zones_preview.jpeg)
 
 ## License
 
