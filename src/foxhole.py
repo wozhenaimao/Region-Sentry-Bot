@@ -17,7 +17,7 @@ class FoxholeAPI:
 
     WORLD_EXTENT_MINIMUM = (-109199.999997, -94499.99999580906968410989)
     WORLD_EXTENT_MAXIMUM = (109199.999997, 94499.99999580906968410989)
-    API_URL = 'https://war-service-live-2.foxholeservices.com/api' # Shard option
+    API_URL = 'https://war-service-live.foxholeservices.com/api' # Shard option
     HEX_SIZE = (1024, 888)
     ICON_SIZE = (1024, 888)
     COLONIALS = 'COLONIALS'
