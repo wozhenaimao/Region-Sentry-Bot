@@ -16,15 +16,38 @@ client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 foxhole = FoxholeAPI()
 
+
+def setup_map():
+    global foxhole
+    print('Map set up initialization')
+    maps = FoxholeAPI.maps(foxhole.shard).json()
+    print('Got maps')  # █
+    for i, name in enumerate(maps):
+        foxhole.mapsGeneralData[name] = FoxholeAPI.map(name, foxhole.shard).json()
+        foxhole.mapsStaticData[name] = FoxholeAPI.map_static(name, foxhole.shard).json()
+        foxhole.mapsDynamicData[name] = FoxholeAPI.map_dynamic(name, foxhole.shard).json()
+        lengthLine = 20 * ((i + 1) / len(maps))
+        line = "█" * int(lengthLine)
+        line = line + "." * int(20 - lengthLine)
+        print(line + f" {int((i + 1) / len(maps) * 100)}% Done    ", end='\r')
+    print("\nInitialization completed!")
+
+
 @client.event
 async def on_ready():
-    await tree.sync()
     global foxhole
-    maps = FoxholeAPI.maps().json()
-    for name in maps:
-        foxhole.mapsGeneralData[name] = FoxholeAPI.map(name).json()
-        foxhole.mapsStaticData[name] = FoxholeAPI.map_static(name).json()
-        foxhole.mapsDynamicData[name] = FoxholeAPI.map_dynamic(name).json()
+    await tree.sync()
+    while True:
+        try:
+            setup_map()
+            break
+        except Exception as e:
+            print("Forcefully chaning shard, exception:", e)
+            foxhole.shard += 1
+            if foxhole.shard > 3:
+                foxhole.shard = 1
+            print("New shard:", foxhole.shard)
+    print('Setup finished, shard: ', foxhole.shard)
     update_dynamic_data.start()
 
 
@@ -36,7 +59,7 @@ async def getRegion(interaction: discord.Interaction, name: str):
 
     await interaction.response.defer()
 
-    realNameList = difflib.get_close_matches(name.replace(' ', '') + 'Hex', FoxholeAPI.maps().json())
+    realNameList = difflib.get_close_matches(name.replace(' ', '') + 'Hex', FoxholeAPI.maps(foxhole.shard).json())
 
     if len(realNameList) == 0:
         await interaction.followup.send(f"Region named '{name}' not found")
@@ -45,7 +68,7 @@ async def getRegion(interaction: discord.Interaction, name: str):
     realName: str = realNameList[0]
     regionImagePath, regionColor, regionType = foxhole.hex_to_image(realName)
 
-    mapData = FoxholeAPI.map(realName).json()
+    mapData = FoxholeAPI.map(realName, foxhole.shard).json()
 
     if regionColor == FoxholeAPI.COLONIALS:
         color = discord.Colour.from_rgb(122, 156, 116)
@@ -72,8 +95,8 @@ async def getRegion(interaction: discord.Interaction, name: str):
     f = discord.File(f'temp/{regionImagePath}.png', filename="image.png")
     e.set_image(url='attachment://image.png')
 
-    warData = FoxholeAPI.war().json()
-    e.set_footer(text=f'War №{warData["warNumber"]}')
+    warData = FoxholeAPI.war(foxhole.shard).json()
+    e.set_footer(text=f'War №{warData["warNumber"]}. Shard {foxhole.shard}')
 
     await interaction.followup.send(file=f, embed=e)
 
@@ -89,7 +112,7 @@ async def getMap(interaction: discord.Interaction):
     await interaction.response.defer()
 
     mapImagePath, totalEnlistments, totalColonialCasualties, totalWardenCasualties, totalCasualties = foxhole.map_image()
-    warData = FoxholeAPI.war().json()
+    warData = FoxholeAPI.war(foxhole.shard).json()
     
     e = discord.Embed(
         title = f'**Real data of the entire battlefield**',
@@ -103,7 +126,7 @@ async def getMap(interaction: discord.Interaction):
     )
     f = discord.File(f'temp/{mapImagePath}.jpg', filename="image.jpg")
     e.set_image(url='attachment://image.jpg')
-    e.set_footer(text=f'War №{warData["warNumber"]} See the image above for complete details of the entire map')
+    e.set_footer(text=f'War №{warData["warNumber"]} See the image above for complete details of the entire map. Shard {foxhole.shard}')
 
     await interaction.followup.send(file=f, embed=e)
 
@@ -119,7 +142,7 @@ async def getMapOverall(interaction: discord.Interaction):
     await interaction.response.defer()
 
     mapImagePath, totalEnlistments, totalColonialCasualties, totalWardenCasualties, totalCasualties = foxhole.map_image(True)
-    warData = FoxholeAPI.war().json()
+    warData = FoxholeAPI.war(foxhole.shard).json()
     
     e = discord.Embed(
         title = f'**Real data of the entire battlefield**',
@@ -133,29 +156,81 @@ async def getMapOverall(interaction: discord.Interaction):
     )
     f = discord.File(f'temp/{mapImagePath}.jpg', filename="image.jpg")
     e.set_image(url='attachment://image.jpg')
-    e.set_footer(text=f'War №{warData["warNumber"]} See the image above for complete details of the entire map')
+    e.set_footer(text=f'War №{warData["warNumber"]} See the image above for complete details of the entire map. Shard {foxhole.shard}')
 
     await interaction.followup.send(file=f, embed=e)
 
     os.remove(f'temp/{mapImagePath}.jpg')
 
+@tree.command(
+    name="set_shard",
+    description="Set the shard from which info is collected from (1 - 3)",
+)
+async def getRegion(interaction: discord.Interaction, shard: int):
+
+    global foxhole
+
+    await interaction.response.defer()
+
+    originalShard = foxhole.shard
+    foxhole.shard = shard
+
+    e = discord.Embed(
+        title = f'New shard loading',
+        description = f'Now shard info will be collected from shard {foxhole.shard}. Please wait for two minutes to set it up...',
+        color = discord.Color.from_rgb(255, 255, 255)
+    )
+
+    await interaction.followup.send(embed=e)
+
+    try:
+        FoxholeAPI.maps(foxhole.shard).json()
+    except Exception:
+        foxhole.shard = originalShard
+        e = discord.Embed(
+            title = f'Error changing shard',
+            description = f'Shard was not changed because it could not be accessed at the time.',
+            color = discord.Color.from_rgb(255, 255, 255)
+        )
+
+        await interaction.followup.send(embed=e)
+        return
+
+    setup_map()
+
+    e = discord.Embed(
+        title = f'New shard set',
+        description = f'Thanks for your patience! You can use the bot again',
+        color = discord.Color.from_rgb(255, 255, 255)
+    )
+
+    await interaction.followup.send(embed=e)
+
 
 @tasks.loop(seconds=3)
 async def update_dynamic_data():
     global dataUpdater
-    next(dataUpdater)
+    global foxhole
+    try:
+        next(dataUpdater)
+    except Exception as e:
+        print("Forcefully chaning shard, exception:", e)
+        foxhole.shard += 1
+        if foxhole.shard > 3:
+            foxhole.shard = 1
+        setup_map()
   
 
 def updating_data_generator():
     global foxhole
-    maps = FoxholeAPI.maps().json()
+    maps = FoxholeAPI.maps(foxhole.shard).json()
     while True:
         for name in maps:
-            foxhole.mapsGeneralData[name] = FoxholeAPI.map(name).json()
+            foxhole.mapsGeneralData[name] = FoxholeAPI.map(name, foxhole.shard).json()
             yield
-            foxhole.mapsStaticData[name] = FoxholeAPI.map_static(name).json()
+            foxhole.mapsStaticData[name] = FoxholeAPI.map_static(name, foxhole.shard).json()
             yield
-            foxhole.mapsDynamicData[name] = FoxholeAPI.map_dynamic(name).json()
+            foxhole.mapsDynamicData[name] = FoxholeAPI.map_dynamic(name, foxhole.shard).json()
             yield
 
 dataUpdater = updating_data_generator()

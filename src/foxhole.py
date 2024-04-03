@@ -17,7 +17,11 @@ class FoxholeAPI:
 
     WORLD_EXTENT_MINIMUM = (-109199.999997, -94499.99999580906968410989)
     WORLD_EXTENT_MAXIMUM = (109199.999997, 94499.99999580906968410989)
-    API_URL = 'https://war-service-live.foxholeservices.com/api' # Shard option
+    API_URL = [ # Shard option
+        'https://war-service-live.foxholeservices.com/api',
+        'https://war-service-live-2.foxholeservices.com/api',
+        'https://war-service-live-3.foxholeservices.com/api'
+    ]
     HEX_SIZE = (1024, 888)
     ICON_SIZE = (1024, 888)
     COLONIALS = 'COLONIALS'
@@ -35,57 +39,28 @@ class FoxholeAPI:
         self.mapsStaticData = {}
         self.mapsDynamicData = {}
         self.calculatedInfo = {}
+        self.shard = 1
 
 
-    def war() -> requests.Response:
-        return requests.get(FoxholeAPI.API_URL + '/worldconquest/war')
+    def war(shard: int) -> requests.Response:
+        return requests.get(FoxholeAPI.API_URL[shard - 1] + '/worldconquest/war')
     
 
-    def maps() -> requests.Response:
-        return requests.get(FoxholeAPI.API_URL + '/worldconquest/maps')
+    def maps(shard: int) -> requests.Response:
+        return requests.get(FoxholeAPI.API_URL[shard - 1] + '/worldconquest/maps')
     
 
-    def map(name: str) -> requests.Response:
-        return requests.get(FoxholeAPI.API_URL + f'/worldconquest/warReport/{name}')
+    def map(name: str, shard: int) -> requests.Response:
+        return requests.get(FoxholeAPI.API_URL[shard - 1] + f'/worldconquest/warReport/{name}')
     
 
-    def map_static(name: str) -> requests.Response:
-        return requests.get(FoxholeAPI.API_URL + f'/worldconquest/maps/{name}/static')
+    def map_static(name: str, shard: int) -> requests.Response:
+        return requests.get(FoxholeAPI.API_URL[shard - 1] + f'/worldconquest/maps/{name}/static')
 
 
-    def map_dynamic(name: str) -> requests.Response:
-        return requests.get(FoxholeAPI.API_URL + f'/worldconquest/maps/{name}/dynamic/public')
+    def map_dynamic(name: str, shard: int) -> requests.Response:
+        return requests.get(FoxholeAPI.API_URL[shard - 1] + f'/worldconquest/maps/{name}/dynamic/public')
     
-
-    def debug_all(name: str = None) -> None:
-        """
-        Get all info from api
-        Used by me to debug
-        """
-
-        r = FoxholeAPI.war()
-        pprint('WAR ' + str(r.status_code) + ' ::: ' + str(r.headers))
-        pprint(r.json())
-
-        r = FoxholeAPI.maps()
-        pprint('MAPS ' +str(r.status_code) + ' ::: ' + str(r.headers))
-        pprint(r.json())
-
-        if not name:
-            return
-        
-        r = FoxholeAPI.map(name)
-        pprint('MAP ' +str(r.status_code) + ' ::: ' + str(r.headers))
-        pprint(r.json())
-
-        r = FoxholeAPI.map_static(name)
-        pprint('STATIC ' +str(r.status_code) + ' ::: ' + str(r.headers))
-        pprint(r.json())
-
-        r = FoxholeAPI.map_dynamic(name)
-        pprint('DYNAMIC ' +str(r.status_code) + ' ::: ' + str(r.headers))
-        pprint(r.json())
-
 
     def hex_to_image(self, name: str, isImage: bool = False, quick: bool = False):
         """
