@@ -180,7 +180,7 @@ class FoxholeAPI:
         
         if basesCount > 5 and hasWardenBases:
             regionType = 'frontline mostly controlled by Colonials'
-        if basesCount < 5 and hasColonialBases:
+        if basesCount < -5 and hasColonialBases:
             regionType = 'frontline mostly controlled by Wardens'
 
         if isImage:
