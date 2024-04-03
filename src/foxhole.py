@@ -170,7 +170,7 @@ class FoxholeAPI:
             else:
                 regionType = 'Colonials\' controlled territory'
                 hexImage = Image.merge('RGBA', (R.point(lambda p: p  - 66), G.point(lambda p: p  - 44), B.point(lambda p: p  - 66), A))
-        elif basesCount < 5:
+        elif basesCount < -5:
             color = FoxholeAPI.WARDENS
             if hasColonialBases and isImage:
                 hexImage = Image.merge('RGBA', (R.point(lambda p: p  - 132), G.point(lambda p: p  - 81), B.point(lambda p: p  - 32), A))
