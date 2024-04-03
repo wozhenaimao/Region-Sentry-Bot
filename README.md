@@ -26,7 +26,7 @@ DISCORD_BOT_TOKEN="your token goes here"
 
 ## Usage
 
-Add the bot to your discord server. Now you can use the region commands
+Add the bot to your discord server. Now you can use the following commands:
 ```bash
 /region :name:
 ```
