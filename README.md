@@ -36,6 +36,9 @@ Add the bot to your discord server. Now you can use the region commands
 ```bash
 /zones
 ```
+```bash
+/set_shard
+```
 
 An example of /map image output
 ![alt text](static/map_preview.jpeg)
